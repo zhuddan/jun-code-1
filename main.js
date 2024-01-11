@@ -127,17 +127,17 @@ function loadImg(src) {
 async function drawImgArrayToBase64(imgs) {
   const canvas = document.createElement("canvas");
 
-  canvas.width = imgSize * column + space * 2;
+  canvas.width = imgSize * rowNumber + space * 2;
 
-  canvas.height = imgSize * column + space * 2;
+  canvas.height = imgSize * colNumber + space * 2;
   /**
    * @type {CanvasRenderingContext2D }
    */
   const ctx = canvas.getContext("2d");
 
   for (let index = 0; index < imgs.length; index++) {
-    const row = Math.floor(index / column); // 行
-    const col = index % column; // 列
+    const row = Math.floor(index / rowNumber); // 行
+    const col = index % colNumber; // 列
     var img = await loadImg(imgs[index]);
     ctx.drawImage(
       img,
