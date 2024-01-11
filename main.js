@@ -25,6 +25,9 @@ const img2 = [
   "fbd1f081e6253fdee9fcc28df4bceba3.jpg",
 ];
 
+/**
+ * 列表数据
+ */
 const list = [
   {
     id: 1,
@@ -38,34 +41,70 @@ const list = [
   },
 ];
 
-let open = false;
+/**
+ * 多少行
+ */
+const rowNumber = 3;
+/**
+ * 多少列
+ */
+const colNumber = 3;
+/**
+ * 总的多少张
+ */
+const imgNumber = rowNumber * colNumber;
+/**
+ * 图多大
+ */
+const imgSize = 300;
+/**
+ * 间距
+ */
+const space = 10;
 
-const column = 3;
-
+/**
+ * 打开弹窗
+ * @param {*} index
+ */
 function openModal(index) {
   const myDialog = document.getElementById("myDialog");
   myDialog.showModal();
   draw(index);
 }
 
+/**
+ * 关闭弹窗
+ */
 function closeModal() {
   const myDialog = document.getElementById("myDialog");
   myDialog.close();
 }
 
+/**
+ * 画图
+ * @param {} index
+ */
 async function draw(index) {
   var data = list[index];
-  const img2dArray = _.chunk(data.img, 9);
-  // var res = [];
-  document.querySelector('.img-box').innerHTML = ''
+  /**
+   * 切分为 imgNumber 张一组
+   */
+  const img2dArray = _.chunk(data.img, imgNumber);
+
+  document.querySelector(".img-box").innerHTML = "";
   for (let index = 0; index < img2dArray.length; index++) {
     const element = img2dArray[index];
     const resImg = document.createElement("img");
-    resImg.src = await drawImgs(element);
-    document.querySelector('.img-box').appendChild(resImg)
+    resImg.src = await drawImgArrayToBase64(element);
+    document.querySelector(".img-box").appendChild(resImg);
   }
 }
 
+/**
+ * 加载图
+ * @param {} src 
+ * @returns 
+ */
 function loadImg(src) {
   return new Promise((resolve, reject) => {
     const img = document.createElement("img");
@@ -82,22 +121,20 @@ function loadImg(src) {
   });
 }
 /**
- *
+ * 绘制图 把多张图绘制在一张图上
  * @param {string[]} imgs
  */
-async function drawImgs(imgs) {
+async function drawImgArrayToBase64(imgs) {
   const canvas = document.createElement("canvas");
 
-  const imgSize = 300;
-  const space = 10;
   canvas.width = imgSize * column + space * 2;
+
   canvas.height = imgSize * column + space * 2;
   /**
    * @type {CanvasRenderingContext2D }
    */
   const ctx = canvas.getContext("2d");
 
-  console.log(ctx);
   for (let index = 0; index < imgs.length; index++) {
     const row = Math.floor(index / column); // 行
     const col = index % column; // 列
@@ -110,13 +147,14 @@ async function drawImgs(imgs) {
       imgSize
     );
   }
-  var url = canvas.toDataURL("png");
-
-  // document.getElementById("img").src = url;
-
+  const url = canvas.toDataURL("png");
   return url;
 }
 
+
+/**
+ * 初始化
+ */
 window.onload = () => {
   var ul = document.createElement("ul");
   for (let index = 0; index < list.length; index++) {
@@ -128,6 +166,5 @@ window.onload = () => {
     `;
     ul.appendChild(li);
   }
-
   document.body.appendChild(ul);
 };
